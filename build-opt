@@ -17,13 +17,13 @@ QTC_PATCH="${QTC_VERSION##*.}"
 curl -LO "https://download.qt.io/official_releases/qtcreator/${QTC_MAJOR_MINOR}/${QTC_MAJOR_MINOR}.${QTC_PATCH}/qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run"
 chmod a+x qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run
 # Non-sudo installation throws exception
-sudo http_proxy=INVALID ./qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run --script qt-noninteractive.qs --proxy --platform minimal
-sudo mv /opt/qtcreator-${QTC_MAJOR_MINOR}.${QTC_PATCH} _opt_qtcreator
+http_proxy=INVALID ./qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run --script qt-noninteractive.qs --proxy --platform minimal
+mv /opt/qtcreator-${QTC_MAJOR_MINOR}.${QTC_PATCH} _opt_qtcreator
 #sudo chown root:root _opt_qtcreator -R
 rm qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run
 
 # Environment Setup
-sudo cp env.sh _opt_qtcreator/.env.sh
+cp env.sh _opt_qtcreator/.env.sh
 
 # Use _opt_qtcreator for readability, rename to _opt b/c it's expected by Dockerfile
 mv _opt_qtcreator _opt

@@ -8,8 +8,10 @@ set -xe
 
 cd "$(dirname "$(realpath "$0")")"
 
-QTC_MAJOR_MINOR="$1"; shift
-QTC_PATCH="$1"; shift
+QTC_VERSION="$1"; shift
+# Parse Semantic Versioning MAJOR.MINOR.PATCH string
+QTC_MAJOR_MINOR="${QTC_VERSION%.*}"
+QTC_PATCH="${QTC_VERSION##*.}"
 
 # Download and install qt-creator
 curl -LO "https://download.qt.io/official_releases/qtcreator/${QTC_MAJOR_MINOR}/${QTC_MAJOR_MINOR}.${QTC_PATCH}/qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run"

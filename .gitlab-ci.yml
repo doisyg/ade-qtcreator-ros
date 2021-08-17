@@ -1,0 +1,54 @@
+stages:
+  - build
+  - deploy
+
+configure_qt_creator:
+  stage: build
+  image: ubuntu:18.04
+  script:
+    - apt update
+    - 'apt install -y
+          build-essential
+          libgl1-mesa-dev
+          libsm6 libice6
+          libxext6 libxrender1
+          libxkbcommon-x11-0
+          libfontconfig1
+          libdbus-1-3
+          curl
+          tar
+      '
+    - ./build-opt "$CI_COMMIT_TAG"
+    - tar cfz opt.tar.gz _opt/
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
+      - opt.tar.gz
+  only:
+    - tags
+
+volume:
+  stage: deploy
+  image: docker:stable
+  services:
+    - docker:dind
+  needs:
+    - configure_qt_creator
+  script:
+    - tar xvzf opt.tar.gz
+    - '
+      docker build
+          --label ade_image_commit_sha="$CI_COMMIT_SHA"
+          --label ade_image_commit_tag="$CI_COMMIT_TAG"
+          -t image .
+      '
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker tag image $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - 'if [ "$CI_COMMIT_REF_NAME" = master ]; then
+          docker tag image $CI_REGISTRY_IMAGE:latest;
+          docker push $CI_REGISTRY_IMAGE:latest;
+      fi'
+  only:
+    - tags

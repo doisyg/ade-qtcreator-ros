@@ -48,9 +48,5 @@ volume:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker tag image $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
-    - 'if [ "$CI_COMMIT_REF_NAME" = master ]; then
-          docker tag image $CI_REGISTRY_IMAGE:latest;
-          docker push $CI_REGISTRY_IMAGE:latest;
-      fi'
   only:
     - tags

@@ -1,37 +1,21 @@
 #!/usr/bin/env bash
-#
-# Copyright 2020 Mapless AI, Inc.
-# Based on ade packages published by Apex.AI, Inc.
-# SPDX-License-Identifier: Apache-2.0
-
 set -xe
 
 cd "$(dirname "$(realpath "$0")")"
 
-QTC_VERSION="$1"; shift
-# Parse Semantic Versioning MAJOR.MINOR.PATCH string
-QTC_MAJOR_MINOR="${QTC_VERSION%.*}"
-QTC_PATCH="${QTC_VERSION##*.}"
 
-# Download and install qt-creator
-curl -LO "https://download.qt.io/official_releases/qtcreator/${QTC_MAJOR_MINOR}/${QTC_MAJOR_MINOR}.${QTC_PATCH}/qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run"
-chmod a+x qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run
+# Download and install qt-creator + ROS plugin
+curl -LO "https://github.com/qt-creator/qt-creator/releases/download/v8.0.1/qtcreator-Linux-2838347900.7z"
+curl -LO "https://github.com/ros-industrial/ros_qtc_plugin/releases/download/8.1/ROSProjectManager-8.1-Linux-x86_64.zip"
+
 # Non-sudo installation throws exception
-mkdir -p /opt/qtcreator
-./qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run install \
-    --verbose \
-    --accept-messages \
-    --accept-licenses \
-    --confirm-command \
-    --accept-obligations \
-    --platform minimal \
-    --root /opt/qtcreator
-mv /opt/qtcreator _opt_qtcreator
+mkdir -p _opt_qtcreator
+7z x qtcreator-Linux-2838347900.7z -o_opt_qtcreator # will need artefact and 7z support
+7z x ROSProjectManager-8.1-Linux-x86_64.zip -o_opt_qtcreator
 #sudo chown root:root _opt_qtcreator -R
-rm qt-creator-opensource-linux-x86_64-${QTC_MAJOR_MINOR}.${QTC_PATCH}.run
-
 # Environment Setup
 cp env.sh _opt_qtcreator/.env.sh
 
 # Use _opt_qtcreator for readability, rename to _opt b/c it's expected by Dockerfile
 mv _opt_qtcreator _opt
+

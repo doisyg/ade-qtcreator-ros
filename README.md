@@ -18,12 +18,14 @@ export ADE_IMAGES="
 The base image is build with this repo Dockerfile. It was built locally with
 
 > $ ./build-opt
+
 > $ docker build -t ghcr.io/doisyg/ade-qtcreator-ros:8.0.1
 
 
 And was then uploaded to the github registry with
 
 > $ echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+
 > $ docker push ghcr.io/doisyg/ade-qtcreator-ros:8.0.1
 
 Where `CR_PAT` is your github token
